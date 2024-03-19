@@ -1,4 +1,3 @@
-drop table key
 create table date
 (
 Key integer,
