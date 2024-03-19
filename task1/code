@@ -1,0 +1,31 @@
+drop table key
+create table date
+(
+Key integer,
+event_time time,
+initld char(3),
+bytes integer,
+type integer
+)
+insert into date
+values (123, '12:32:12', 'id1',	100, 68),
+	(456, '12:32:45', 'ld3', 80, 72),
+	(456, '12:32:45', 'ld3', 44, 88),
+	(123, '12:32:52', 'ld1', 200 , 42),
+	(789, '12:33:10', 'ld2', 8, 42),
+	(123, '12:33:32', 'ld1', 10 , 77),
+	(789, '12:33:50', 'ld2', 18, 42),
+	(789, '12:34:00', 'ld2', 45, 42),
+	(456, '12:34:22', 'ld3', 98, 13),
+	(789, '12:34:28', 'ld2', 1, 42),
+	(123, '12:34:41', 'ld1', 17, 12),
+	(789, '12:34:42', 'ld2', 17, 42),
+	(456, '12:34:59', 'ld3', 97, 18)
+	
+select key, (select  ( date_trunc( 'minute', event_time))) ,sum(bytes) 
+from date 			
+where key in (select key from date where type = 42 
+			 intersect 
+			 select key from date where type <>42)
+group by  1, 2
+order by 2
