@@ -1,0 +1,69 @@
+CREATE TABLE person
+(
+	id integer  NOT NULL ,
+	sirname varchar ,
+	name varchar ,
+	PRIMARY KEY (id)
+);
+
+CREATE TABLE book
+(
+	id integer Not null,
+	title varchar,
+	print_date integer,
+	PRIMARY KEY (id),
+	FOREIGN KEY ( id)
+	REFERENCES person ( id )
+);
+
+CREATE TABLE link
+(
+	id integer not null,
+	id1 integer not null,
+	id2 integer not null,
+	primary key (id, id1, id2),
+	FOREIGN KEY ( id1 )
+	REFERENCES person ( id ),
+	FOREIGN KEY ( id2 )
+	REFERENCES book ( id )
+);
+INSERT INTO person
+values (1, 'Сергеев', 'Сергей'),
+	(2,	'Платин'	, 'Андрей'),	
+	(3,	'Веровцев',	'Михаил'	),
+	(4,	'Устинов',	'Константин'),	
+	(5,	'Скородумов',	'Виталий'),	
+	(6,	'Лашнев',	'Сергей'	);
+	
+INSERT INTO book
+VALUES (1,	'Алгебра',	1997),	
+	(2,	'Язык C++',	1991),	
+	(3,	'Сложность алгоритмов',	1990),	
+	(4,	'Простые числа',	1999),	
+	(5,	'Базы данных',	1994),	
+	(6,	'Теория групп',	2000);	
+
+INSERT INTO link
+VALUES (1,	1,	2),		
+(2,	2,	2),		
+(3,	3,	1),		
+(4,	4,	1),		
+(5,	6,	3),		
+(6,	2,	3),		
+(7,	1,	5),		--запись означает, что Сергеев С. Н. (person с id=1) - автор пособия "Базы данных" (book с id=5)
+(8,	4,	6),		
+(9,	4,	4),		
+(10, 3,	4);		
+
+
+select p.sirname, count(*) as quantity
+	from link l	
+	join book b ON b.id = l.id2
+	join person p ON p.id = l.id1
+	where  b.print_date Between 1995 and 2001 
+    and not exists (
+        select 1 from link where link.id2 = l.id2 and  link.id1 <> l.id1
+    )
+	group by 1
+	order by 2 desc;
+
